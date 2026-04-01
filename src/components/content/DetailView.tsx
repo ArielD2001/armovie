@@ -281,7 +281,8 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
                   src={currentEmbedUrl}
                   className="w-full h-full"
                   allowFullScreen
-                  referrerPolicy="origin"
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                  referrerPolicy="no-referrer-when-downgrade"
                   title={item.title}
                 />
               </div>
@@ -420,10 +421,12 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
                 <X className="w-5 h-5 text-white" />
               </button>
               <iframe
-                src={`https://www.youtube.com/embed/${item.trailer}?autoplay=1&rel=0`}
+                src={`https://www.youtube-nocookie.com/embed/${item.trailer}?autoplay=1&rel=0&showinfo=0&controls=1`}
                 className="w-full h-full"
                 allowFullScreen
+                allow="autoplay; encrypted-media; xr-spatial-tracking; picture-in-picture"
                 title="Trailer"
+                referrerPolicy="no-referrer-when-downgrade"
               />
            </div>
         </div>
