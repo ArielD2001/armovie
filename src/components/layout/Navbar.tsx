@@ -87,8 +87,27 @@ export const Navbar = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 w-full bg-zinc-950 border-b border-white/10 animate-in slide-in-from-top duration-300">
-          <div className="flex flex-col p-6 gap-4">
-            {navLinks.map((link) => (
+          <div className="flex flex-col p-6 gap-6">
+            {/* Mobile Search */}
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus-within:border-blue-500/50 transition-all">
+              <Search className="w-5 h-5 text-zinc-500" />
+              <input 
+                type="text" 
+                placeholder="Buscar películas, series..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    router.push(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
+                    setSearchQuery("");
+                    setIsMobileMenuOpen(false);
+                  }
+                }}
+                className="bg-transparent border-none outline-none text-base ml-3 w-full"
+              />
+            </div>
+            
+            <div className="flex flex-col gap-4">
               <Link 
                 key={link.name} 
                 href={link.href}
