@@ -450,12 +450,12 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
                 <X className="w-5 h-5 text-white" />
               </button>
               <iframe
-                src={`https://www.youtube-nocookie.com/embed/${item.trailer}?autoplay=1&rel=0&showinfo=0&controls=1`}
+                src={`https://www.youtube-nocookie.com/embed/${item.trailer}?autoplay=1&mute=1&rel=0&showinfo=0&controls=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
                 className="w-full h-full"
                 allowFullScreen
-                allow="autoplay; encrypted-media; xr-spatial-tracking; picture-in-picture"
+                allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
                 title="Trailer"
-                referrerPolicy="no-referrer-when-downgrade"
+                referrerPolicy="strict-origin-when-cross-origin"
               />
            </div>
         </div>

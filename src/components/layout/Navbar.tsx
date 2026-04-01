@@ -10,6 +10,7 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   
   const router = useRouter();
@@ -58,7 +59,7 @@ export const Navbar = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-4 md:gap-6">
-          <div className="hidden md:flex items-center bg-white/10 border border-white/10 rounded-full px-4 py-1.5 focus-within:border-blue-500/50 transition-all">
+          <div className="hidden lg:flex items-center bg-white/10 border border-white/10 rounded-full px-4 py-1.5 focus-within:border-blue-500/50 transition-all">
             <Search className="w-4 h-4 text-zinc-400" />
             <input 
               type="text" 
@@ -77,12 +78,49 @@ export const Navbar = () => {
 
           <button 
             className="lg:hidden p-2 text-zinc-400 hover:text-white"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => {
+              setIsMobileSearchOpen(!isMobileSearchOpen);
+              if (isMobileMenuOpen) setIsMobileMenuOpen(false);
+            }}
+          >
+            <Search className="w-5 h-5" />
+          </button>
+
+          <button 
+            className="lg:hidden p-2 text-zinc-400 hover:text-white"
+            onClick={() => {
+              setIsMobileMenuOpen(!isMobileMenuOpen);
+              if (isMobileSearchOpen) setIsMobileSearchOpen(false);
+            }}
           >
             {isMobileMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
       </div>
+
+      {/* Mobile Search Bar Overlay */}
+      {isMobileSearchOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-zinc-950 border-b border-white/10 p-4 animate-in slide-in-from-top duration-300">
+          <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus-within:border-blue-500/50 transition-all">
+            <Search className="w-5 h-5 text-zinc-500" />
+            <input 
+              type="search" 
+              placeholder="¿Qué quieres ver hoy?" 
+              value={searchQuery}
+              autoFocus
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  router.push(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
+                  setSearchQuery("");
+                  setIsMobileSearchOpen(false);
+                }
+              }}
+              className="bg-transparent border-none outline-none text-base ml-3 w-full"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
