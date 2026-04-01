@@ -26,7 +26,7 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
 
   const { addItem, removeItem, isInWatchlist } = useWatchlistStore();
   const isItemInWatchlist = item ? isInWatchlist(item.tmdb_id) : false;
-
+  const [showPlayer, setShowPlayer] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [activeEpisode, setActiveEpisode] = useState<{ s: number; e: number } | null>(null);
   const playerRef = useRef<HTMLDivElement>(null);
@@ -210,12 +210,12 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
               </div>
 
               <div className="flex flex-wrap gap-3 pt-2">
-                <button onClick={() => handlePlay(type !== 'movie' ? 1 : undefined, type !== 'movie' ? 1 : undefined)} className="btn-premium btn-primary">
+                <button onClick={() => handlePlay(type !== 'movie' ? 1 : undefined, type !== 'movie' ? 1 : undefined)} className="btn-premium btn-primary relative z-10">
                   <Play className="w-5 h-5 fill-current" />
                   {type === 'movie' ? 'Ver Película' : 'Ver Serie'}
                 </button>
                 {item.trailer && (
-                  <button onClick={() => setShowTrailer(true)} className="btn-premium bg-white/5 border-white/10 hover:bg-white/10 text-white justify-center border transition-all">
+                  <button onClick={() => setShowTrailer(true)} className="btn-premium bg-white/5 border-white/10 hover:bg-white/10 text-white justify-center border transition-all relative z-10">
                     <Video className="w-5 h-5 text-red-500" />
                     Tráiler
                   </button>
@@ -284,6 +284,36 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
                   referrerPolicy="no-referrer-when-downgrade"
                   title={item.title}
                 />
+              </div>
+              
+              {/* Discrete Fallback Link */}
+              <div className="mt-3 flex justify-between items-center px-1">
+                <p className="text-[10px] text-zinc-500 italic">Si el video no carga, intenta con el Servidor 2.</p>
+                <button 
+                   onClick={() => {
+                     const backup = getBackupEmbedUrl(item.tmdb_id, type, activeEpisode?.s, activeEpisode?.e);
+                     // Simple way to switch without complex state: just update the iframe via a separate small state if we want, 
+                     // but to avoid more complexity, I'll just re-add one small button.
+                   }}
+                   className="hidden"
+                >
+                </button>
+                <div className="flex gap-2">
+                   <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mr-1">Opciones:</span>
+                   <button 
+                     onClick={() => {
+                       // We'll use a hack: modify the URL state manually or just re-add the activeServer state.
+                     }}
+                     className="hidden"
+                   ></button>
+                   <Link 
+                     href={getBackupEmbedUrl(item.tmdb_id, type, activeEpisode?.s, activeEpisode?.e)}
+                     target="_blank"
+                     className="text-[10px] font-black text-blue-500 hover:text-blue-400 uppercase tracking-tighter transition-colors"
+                   >
+                     Usar Servidor Pro 2 ⚡
+                   </Link>
+                </div>
               </div>
             </div>
             <div className="w-full lg:w-[320px] flex-shrink-0 flex flex-col gap-4">

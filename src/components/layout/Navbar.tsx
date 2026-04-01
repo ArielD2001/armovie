@@ -160,7 +160,6 @@ export const Navbar = () => {
           </div>
         </div>
       )}
-      <div className="lg:hidden absolute top-full left-0 w-full bg-zinc-950 border-b border-white/10 animate-in slide-in-from-top duration-300 pointer-events-none opacity-0"></div>
     </nav>
   );
 };
