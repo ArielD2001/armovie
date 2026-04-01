@@ -204,7 +204,7 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
               <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none">{item.title}</h1>
               
               <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-400 font-medium pb-1">
-                {item.genres?.length > 0 && <span className="text-blue-400">{item.genres.slice(0, 3).join(', ')}</span>}
+                {(item.genres?.length ?? 0) > 0 && <span className="text-blue-400">{item.genres?.join(', ')}</span>}
                 {item.runtime && <span>• {item.runtime} min</span>}
                 {item.status && <span className="hidden sm:inline-block">• {item.status}</span>}
                 {item.director && <span>• Dir. {item.director}</span>}
@@ -389,7 +389,7 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
               <div key={actor.id} className="flex-none w-28 text-center group">
                  <div className="w-24 h-24 mx-auto rounded-full bg-zinc-800 border border-white/10 overflow-hidden relative shadow-lg group-hover:border-blue-500 transition-colors mb-3">
                     {actor.profile_path ? (
-                       <Image src={getImageUrl(actor.profile_path, 'w200')!} fill alt={actor.name} className="object-cover" unoptimized/>
+                       <Image src={getImageUrl(actor.profile_path, 'w500')!} fill alt={actor.name} className="object-cover" unoptimized/>
                     ) : (
                        <div className="w-full h-full flex flex-col items-center justify-center text-zinc-600 text-[10px] font-bold">Sin foto</div>
                     )}
