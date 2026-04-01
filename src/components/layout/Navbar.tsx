@@ -108,16 +108,17 @@ export const Navbar = () => {
             </div>
             
             <div className="flex flex-col gap-4">
-              <Link 
-                key={link.name} 
-                href={link.href}
-                className="text-lg font-medium text-zinc-400 hover:text-white"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+              {navLinks.map((link) => (
+                <Link 
+                  key={link.name} 
+                  href={link.href}
+                  className="text-lg font-medium text-zinc-400 hover:text-white"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
         </div>
       )}
     </nav>
