@@ -41,3 +41,10 @@ export const cleanTitleUtils = (title: string) => {
     .split(' | ')[0]
     .trim();
 };
+export const getBackupEmbedUrl = (tmdbId: number, type: 'movie' | 'series' | 'anime', s?: number, e?: number) => {
+  const isTV = type === 'series' || type === 'anime';
+  if (isTV && s !== undefined && e !== undefined) {
+    return `https://vidsrc.to/embed/tv/${tmdbId}/${s}/${e}`;
+  }
+  return `https://vidsrc.to/embed/movie/${tmdbId}`;
+};

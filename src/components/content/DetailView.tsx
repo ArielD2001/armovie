@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { Play, Plus, Star, Calendar, Check, Loader2, X, Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { VimeusItem, getImageUrl } from "@/lib/vimeus-client";
+import { VimeusItem, getImageUrl, getBackupEmbedUrl } from "@/lib/vimeus-client";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { MovieRow } from "./MovieRow";
 import { useWatchlistStore } from "@/store/useWatchlistStore";
@@ -29,6 +29,7 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
 
   const [showPlayer, setShowPlayer] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [activeServer, setActiveServer] = useState<'vimeus' | 'backup'>('vimeus');
   const [activeEpisode, setActiveEpisode] = useState<{ s: number; e: number } | null>(null);
   const playerRef = useRef<HTMLDivElement>(null);
 
@@ -153,9 +154,13 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
   const VIEW_KEY = process.env.NEXT_PUBLIC_VIMEUS_VIEW_KEY || 'DRW0F8mcdTD5gDB95cdtmxzou1XPTnsNL7VUeaAsPXU';
   const embedBase = type === 'movie' ? 'movie' : (type === 'series' ? 'serie' : 'anime');
 
-  const currentEmbedUrl = activeEpisode
+  const vimeusUrl = activeEpisode
     ? `https://vimeus.com/e/${embedBase}?tmdb=${item.tmdb_id}&se=${activeEpisode.s}&ep=${activeEpisode.e}&view_key=${VIEW_KEY}`
     : item.embed_url || `https://vimeus.com/e/${embedBase}?tmdb=${item.tmdb_id}&view_key=${VIEW_KEY}`;
+
+  const backupUrl = getBackupEmbedUrl(item.tmdb_id, type, activeEpisode?.s, activeEpisode?.e);
+  
+  const currentEmbedUrl = activeServer === 'vimeus' ? vimeusUrl : backupUrl;
 
   const seasonsArray = Array.from({ length: numberOfSeasons }, (_, i) => i + 1);
 
@@ -260,11 +265,27 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
           className="max-w-[1440px] mx-auto px-8 md:px-24 mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500"
         >
           {/* Now Playing Header */}
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <h3 className="text-xl md:text-2xl font-bold text-zinc-200 flex items-center gap-3">
               <span className="w-1.5 h-6 bg-blue-600 rounded-full inline-block"></span>
               <span className="text-zinc-400">Viendo:</span> <span className="text-white">{type === 'movie' ? item.title : `Temporada ${activeEpisode?.s} - Episodio ${activeEpisode?.e}`}</span>
             </h3>
+            
+            {/* Server Selector */}
+            <div className="flex bg-zinc-900/50 p-1 rounded-xl border border-white/5 self-end sm:self-auto">
+              <button 
+                onClick={() => setActiveServer('vimeus')}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeServer === 'vimeus' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
+              >
+                Servidor 1
+              </button>
+              <button 
+                onClick={() => setActiveServer('backup')}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeServer === 'backup' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
+              >
+                Servidor 2
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
