@@ -27,9 +27,7 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
   const { addItem, removeItem, isInWatchlist } = useWatchlistStore();
   const isItemInWatchlist = item ? isInWatchlist(item.tmdb_id) : false;
 
-  const [showPlayer, setShowPlayer] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
-  const [activeServer, setActiveServer] = useState<'vimeus' | 'backup'>('vimeus');
   const [activeEpisode, setActiveEpisode] = useState<{ s: number; e: number } | null>(null);
   const playerRef = useRef<HTMLDivElement>(null);
 
@@ -154,13 +152,9 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
   const VIEW_KEY = process.env.NEXT_PUBLIC_VIMEUS_VIEW_KEY || 'DRW0F8mcdTD5gDB95cdtmxzou1XPTnsNL7VUeaAsPXU';
   const embedBase = type === 'movie' ? 'movie' : (type === 'series' ? 'serie' : 'anime');
 
-  const vimeusUrl = activeEpisode
+  const currentEmbedUrl = activeEpisode
     ? `https://vimeus.com/e/${embedBase}?tmdb=${item.tmdb_id}&se=${activeEpisode.s}&ep=${activeEpisode.e}&view_key=${VIEW_KEY}`
     : item.embed_url || `https://vimeus.com/e/${embedBase}?tmdb=${item.tmdb_id}&view_key=${VIEW_KEY}`;
-
-  const backupUrl = getBackupEmbedUrl(item.tmdb_id, type, activeEpisode?.s, activeEpisode?.e);
-  
-  const currentEmbedUrl = activeServer === 'vimeus' ? vimeusUrl : backupUrl;
 
   const seasonsArray = Array.from({ length: numberOfSeasons }, (_, i) => i + 1);
 
@@ -265,32 +259,16 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
           className="max-w-[1440px] mx-auto px-8 md:px-24 mt-12 animate-in fade-in slide-in-from-bottom-4 duration-500"
         >
           {/* Now Playing Header */}
-          <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h3 className="text-xl md:text-2xl font-bold text-zinc-200 flex items-center gap-3">
+          <div className="mb-4">
+            <h3 className="text-lg md:text-2xl font-bold text-zinc-200 flex items-center gap-2">
               <span className="w-1.5 h-6 bg-blue-600 rounded-full inline-block"></span>
-              <span className="text-zinc-400">Viendo:</span> <span className="text-white">{type === 'movie' ? item.title : `Temporada ${activeEpisode?.s} - Episodio ${activeEpisode?.e}`}</span>
+              <span className="text-zinc-400 text-sm md:text-lg">Viendo:</span> <span className="text-white text-sm md:text-lg">{type === 'movie' ? item.title : `Temporada ${activeEpisode?.s} - Episodio ${activeEpisode?.e}`}</span>
             </h3>
-            
-            {/* Server Selector */}
-            <div className="flex bg-zinc-900/50 p-1 rounded-xl border border-white/5 self-end sm:self-auto">
-              <button 
-                onClick={() => setActiveServer('vimeus')}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeServer === 'vimeus' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
-              >
-                Servidor 1
-              </button>
-              <button 
-                onClick={() => setActiveServer('backup')}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeServer === 'backup' ? 'bg-blue-600 text-white shadow-lg' : 'text-zinc-500 hover:text-white'}`}
-              >
-                Servidor 2
-              </button>
-            </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1">
-              <div className="relative w-full aspect-video bg-zinc-900 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex-1 w-full">
+              <div className="relative w-full aspect-video bg-zinc-900 rounded-xl overflow-hidden border border-white/10 shadow-2xl">
                 <button
                   onClick={() => setShowPlayer(false)}
                   className="absolute top-4 right-4 z-[60] bg-black/50 hover:bg-white/20 p-2 rounded-full backdrop-blur-md transition-colors"
