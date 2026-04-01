@@ -350,24 +350,32 @@ export const DetailView = ({ id, type }: DetailViewProps) => {
                 onClick={() => handlePlay(ep.season, ep.episode)}
                 className="flex items-center gap-4 p-4 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 transition-all text-left w-full group"
               >
-                {ep.still_path ? (
-                  <div className="w-32 h-20 bg-zinc-900 rounded-lg overflow-hidden flex-shrink-0 relative hidden sm:block">
-                    <Image
-                      src={`https://image.tmdb.org/t/p/w300${ep.still_path}`}
-                      alt={ep.title || `Episodio ${ep.episode}`}
-                      fill
-                      className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                      unoptimized
-                    />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 bg-blue-600/20 border border-blue-500/30 rounded-lg flex items-center justify-center font-black text-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0">
-                    {ep.episode}
-                  </div>
-                )}
+                <div className="relative flex-shrink-0">
+                  {ep.still_path ? (
+                    <div className="w-32 h-20 bg-zinc-900 rounded-lg overflow-hidden relative hidden sm:block border border-white/5">
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w300${ep.still_path}`}
+                        alt={ep.title || `Episodio ${ep.episode}`}
+                        fill
+                        className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                        unoptimized
+                      />
+                      <div className="absolute bottom-1 right-1 bg-black/70 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] font-black text-white border border-white/10">
+                        EP {ep.episode}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 bg-blue-600/20 border border-blue-500/30 rounded-lg flex items-center justify-center font-black text-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                      {ep.episode}
+                    </div>
+                  )}
+                </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-base line-clamp-1">{ep.title || `Episodio ${ep.episode}`}</h3>
-                  <p className="text-zinc-500 text-sm line-clamp-2 mt-1">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest sm:hidden">EP {ep.episode}</span>
+                    <h3 className="font-bold text-base line-clamp-1">{ep.title || `Episodio ${ep.episode}`}</h3>
+                  </div>
+                  <p className="text-zinc-500 text-sm line-clamp-2">
                     {ep.overview || `Temporada ${ep.season} · Episodio ${ep.episode}`}
                   </p>
                 </div>
